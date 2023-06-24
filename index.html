@@ -4,28 +4,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
   <title>TokoSepatuX</title>
 </head>
 <body>
-  <h1>TokoSepatuX</h1>
+  <div id="app">
+    <nav class="nav justify-content-center bg-dark border-bottom" data-bs-theme="dark">
+      <h1 style="color: rgb(254, 254, 254);">Toko Sepatu X</h1>
+    </nav>
 
-  <h2>Daftar Harga Sepatu</h2>
-  <ul id="priceList"></ul>
+    <div class="container-fluid">
 
-  <h2>Form Pembelian Sepatu</h2>
-  <form id="purchaseForm">
-    <label for="shoeSelect">Pilih Sepatu:</label>
-    <select id="shoeSelect" required></select>
+      <h3>Daftar Harga Sepatu</h3>
+      <ul>
+        <li v-for="shoes in shoesData" :key="shoes.name">
+          {{ shoes.name }} Rp.{{ shoes.price }}
+        </li>
+      </ul>
+  
+      <div>
+        <label for="selected">Pilih Sepatu</label>
+        <select name="selected" id="" v-model="form.selected" required>
+          <option v-for="shoes in shoesData" :key="shoes.name" :value="shoes">
+            {{ shoes.name }}
+          </option>
+        </select>
+        <label for="count">jumlah</label>
+        <br>
+        <input name="count" type="number" v-model="form.count" min="1">
+        <br><br>
+        <button type="button" class="btn btn-primary" @click="addCartItem">pesan</button>
+      </div>
+      
+      <br>
+  
+      <h3>Pesanan Anda</h3>
+      <ul>
+        <div v-if="selectedShoes.length > 0">
+          <li v-for="shoes in selectedShoes" :key="shoes.name">
+            <span> {{ shoes.name }} {{ shoes.count }} </span> 
+            <button @click="">+</button> 
+            <button @click="">-</button>  
+          </li>
+        </div>
+        <div v-else>
+          <p>- Tidak ada pesanan -</p>
+        </div>
+      </ul>
+      <h4>Total yang harus dibayarkan: {{ totalPrice }} </h4>
+    </div>
 
-    <button type="submit">Beli</button>
-  </form>
+  </div> 
 
-  <h2>Sepatu yang Dipilih</h2>
-  <div id="selectedShoes"></div>
-
-  <h2>Harga 2 Terbesar</h2>
-  <ul id="topPricesList"></ul>
-
-  <script src="main.js"></script>
+  
+  <script src="main.js" type="module"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 </body>
 </html>
