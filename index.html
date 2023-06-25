@@ -1,62 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <title>TokoSepatuX</title>
 </head>
+
 <body>
   <div id="app">
-    <nav >
+    <nav>
       <h1>Toko Sepatu X</h1>
     </nav>
 
-    <div class="container-fluid">
+    <h4>Untuk merayakan berdirinya toko ini, kami memberikan diskon dengan buy 1 get 3 dimana harga terbesar kedua akan
+      menjadi harga yang harus anda bayar.</h4>
+    <h3>Daftar Harga Sepatu</h3>
+    <table>
+      <tr v-for="shoes in shoesData" :key="shoes.name">
+        <td>{{ shoes.name }}</td>
+        <td>{{ shoes.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) }}</td>
+      </tr>
+    </table>
 
-      <h3>Daftar Harga Sepatu</h3>
-      <ul>
-        <li v-for="shoes in shoesData" :key="shoes.name">
-          {{ shoes.name }} {{ shoes.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) }}
-        </li>
-      </ul>
-  
-      <div>
-        <label for="selected">Pilih Sepatu</label>
-        <select name="selected" id="" v-model="form.selected" required>
-          <option v-for="shoes in shoesData" :key="shoes.name" :value="shoes">
-            {{ shoes.name }}
-          </option>
-        </select>
-        <label for="count">jumlah</label>
-        <br>
-        <input name="count" type="number" v-model="form.count" min="1">
-        <br><br>
-        <button type="button" class="btn btn-primary" @click="addNewCartItem">pesan</button>
-      </div>
-      
+    <div>
       <br>
-  
-      <h3>Pesanan Anda</h3>
-      <ul>
-        <div v-if="selectedShoes.length > 0">
-          <li v-for="shoes in selectedShoes" :key="shoes.name">
-            <span> {{ shoes.name }} {{ shoes.count }} </span> <span></span>
-            <button @click="addCartItem(shoes.name)">+</button> 
-            <button @click="reduceCartItem(shoes.name)">-</button>  
-            <button @click="deleteCartItem(shoes.name)">x</button>  
-          </li>
-        </div>
-        <div v-else>
-          <p>- Tidak ada pesanan -</p>
-        </div>
-      </ul>
-      <h4>Total yang harus dibayarkan: {{ totalPrice }} </h4>
+      <label for="selected">Pilih Sepatu</label>
+      <select name="selected" v-model="form.selected" required>
+        <option v-for="shoes in shoesData" :key="shoes.name" :value="shoes">
+          {{ shoes.name }}
+        </option>
+      </select>
+      <label for="count">jumlah</label>
+      <input name="count" type="number" v-model="form.count" min="1" @keyup.enter="addNewCartItem" required>
+      <br><br>
+      <button type="button" class="btn btn-primary" @click="addNewCartItem">pesan</button>
     </div>
 
-  </div> 
+    <br>
 
-  
+    <h3>Pesanan Anda</h3>
+
+    <div v-if="selectedShoes.length > 0">
+
+      <table style="border: 2px solid #5e5e5e;">
+        <th>
+          <td>Nama</td>
+          <td>Jumlah</td>
+          <td>Harga</td>
+          <td>Edit</td>
+        </th>
+        <tr v-for="shoes in selectedShoes" :key="shoes.name">
+          <td>{{selectedShoes.indexOf(shoes)}}</td>
+          <td>
+            {{ shoes.name }}
+          </td>
+          <td>
+            {{ shoes.count }} pcs
+          </td>
+          <td>
+            {{ shoes.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) }}
+          </td>
+          <td>
+            <button @click="addCartItem(shoes.name)">+</button>
+            <button @click="reduceCartItem(shoes.name)">-</button>
+            <button @click="deleteCartItem(shoes.name)">x</button>
+          </td>
+        </tr>
+      </table>
+
+      <div v-if="countTotal > 4">
+        <h4>Maaf anda hanya bisa membeli 1 dan gratis 3</h4>
+      </div>
+      <div v-else>
+        <h4>Total yang harus dibayarkan: {{ totalPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+          }}</h4>
+      </div>
+
+    </div>
+    <div v-else>
+      <p>- Tidak ada pesanan -</p>
+    </div>
+  </div>
   <script src="main.js" type="module"></script>
 </body>
+
 </html>

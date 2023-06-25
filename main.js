@@ -18,23 +18,45 @@ createApp({
       
       // [{name: shoeName, count:shoeCount, price:pricePerPcs}]
       selectedShoes: [],
+      
+      prices: [],
+      totalPrice: 0,
 
-      // priceTotal: 0,
-
-      // required for handle form
+      // untuk menampung data dari form
       form: {
         selected: {},
         count: 0,
       },
 
-      prices: [],
     }
   },
 
   methods: {
+    countPrices(){
+      if (this.selectedShoes.length > 0){
+        this.prices = this.selectedShoes.map((s) => s.price);
+
+        console.log(this.prices)
+        
+        let unique = [...new Set(this.prices)]
+        .sort()
+        .reverse();
+        console.log("count price di jalankan");
+        
+        const len = unique.length;
+        if (len > 2) {
+          this.totalPrice = unique[1];
+        } 
+        this.totalPrice = unique[0];
+      } else {
+        this.totalPrice = 0;
+      }
+    },
+
     addNewCartItem(){
-      // jika count != 0
-      if (this.form.count != 0 || this.form.count != "" ) {
+      // validasi data
+      if (this.form.count > 0 ) {
+
         const idx = this.selectedShoes.findIndex((s) => s.name === this.form.selected.name);
         if (idx != -1){
           this.selectedShoes[idx].count += this.form.count;
@@ -45,11 +67,9 @@ createApp({
               name: this.form.selected.name, 
               price: this.form.selected.price}
           );
-          console.log(this.selectedShoes)
         }
-      } else {
-        // ketika count < 1
       }
+      this.countPrices();
     },
 
     addCartItem(name){
@@ -57,6 +77,7 @@ createApp({
       if (idx != -1){
         this.selectedShoes[idx].count += 1;
       }
+      this.countPrices();
     },
 
     reduceCartItem(name){
@@ -68,6 +89,7 @@ createApp({
           this.selectedShoes.splice(idx);
         }
       }
+      this.countPrices();
     },
 
     deleteCartItem(name){
@@ -75,23 +97,17 @@ createApp({
       if (idx != -1){
         this.selectedShoes.splice(idx);
       }
-    }
+      this.countPrices();
+    },
   },
 
   computed: {
-    totalPrice(){
-      if (this.selectedShoes.length > 0){
-        this.prices = this.selectedShoes.map((s) => s.price)
-          .sort()
-          .reverse();
-        
-        const len = this.prices.length;
-        if (len > 2) {
-          return this.prices[1];
-        } 
-        return this.prices[0];
-      }
-      return 0;
-    }
+    countTotal(){
+      let total = 0;
+      let counts = this.selectedShoes.map(s => s.count);
+      counts.forEach(c => total+=c);
+      return total;
+    },
   }
+
 }).mount('#app')
