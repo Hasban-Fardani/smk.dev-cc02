@@ -19,7 +19,7 @@ createApp({
       // [{name: shoeName, count:shoeCount, price:pricePerPcs}]
       selectedShoes: [],
 
-      priceTotal: 0,
+      // priceTotal: 0,
 
       // required for handle form
       form: {
@@ -27,12 +27,12 @@ createApp({
         count: 0,
       },
 
-      msg: "",
+      prices: [],
     }
   },
 
   methods: {
-    addCartItem(){
+    addNewCartItem(){
       // jika count != 0
       if (this.form.count != 0 || this.form.count != "" ) {
         const idx = this.selectedShoes.findIndex((s) => s.name === this.form.selected.name);
@@ -52,26 +52,44 @@ createApp({
       }
     },
 
-    deleteCartItem(){
+    addCartItem(name){
+      const idx = this.selectedShoes.findIndex(s => s.name === name);
+      if (idx != -1){
+        this.selectedShoes[idx].count += 1;
+      }
+    },
 
+    reduceCartItem(name){
+      const idx = this.selectedShoes.findIndex(s => s.name === name);
+      if (idx != -1){
+        if (this.selectedShoes[idx].count > 1){
+          this.selectedShoes[idx].count -= 1;
+        } else {
+          this.selectedShoes.splice(idx);
+        }
+      }
+    },
+
+    deleteCartItem(name){
+      const idx = this.selectedShoes.findIndex(s => s.name === name);
+      if (idx != -1){
+        this.selectedShoes.splice(idx);
+      }
     }
   },
 
   computed: {
     totalPrice(){
       if (this.selectedShoes.length > 0){
-        const prices = this.selectedShoes.map((s) => s.price); 
-        prices.sort();
-        const len = prices.length;
-        if (len === 1) {
-          return prices[0];
+        this.prices = this.selectedShoes.map((s) => s.price)
+          .sort()
+          .reverse();
+        
+        const len = this.prices.length;
+        if (len > 2) {
+          return this.prices[1];
         } 
-        if (len === 2) {
-          return prices[1];
-        }
-        if (len > 2){
-          return prices[len - 2]; 
-        }
+        return this.prices[0];
       }
       return 0;
     }
